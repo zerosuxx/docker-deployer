@@ -1,4 +1,4 @@
-FROM docker/compose:1.24.0
+FROM docker/compose:1.25.0-rc1
 
 RUN apk add --no-cache bash nano git make
 
