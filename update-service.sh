@@ -5,4 +5,4 @@ if [[ -z "$1" ]] || [[ -z "$2" ]]; then
     exit
 fi
 
-docker service update --force --image $1 $2
+docker service update --with-registry-auth --force --image $1 $2
