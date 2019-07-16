@@ -1,6 +1,6 @@
 FROM docker/compose:1.25.0-rc1
 
-RUN apk add --no-cache bash nano git make
+RUN apk add --no-cache bash nano git make htop curl bash-completion
 
 COPY scripts/ /usr/local/bin/
 
