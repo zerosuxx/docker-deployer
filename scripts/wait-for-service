@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 
-SERVICE_NAME=$1
+if [ -z "$1" ]; then
+    echo 'Usage wait-for-service SERVICE'
+    exit
+fi
+
+SERVICE=$1
 status=1
 
 while [ $status -ne 0 ]; do
-        SERVICE=`get-docker-service-name $SERVICE_NAME`
-        docker exec -it $SERVICE ps > /dev/null 2>&1
+        SERVICE_NAME=`get-docker-service-name $SERVICE`
+        docker exec -it $SERVICE_NAME ps > /dev/null 2>&1
         status=$?
 
-        [ $status -ne 0 ] && echo "waiting for service: "$SERVICE && sleep 2
+        [ $status -ne 0 ] && echo "waiting for service: "$SERVICE_NAME && sleep 2
 done
