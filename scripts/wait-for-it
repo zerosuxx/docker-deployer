@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+SERVICE=$1
+status=1
+
+while [ $status -ne 0 ]; do
+        docker exec -it $SERVICE ps > /dev/null 2>&1
+        status=$?
+
+        [ $status -ne 0 ] && echo "waiting for service: "$SERVICE
+        sleep 2
+done
