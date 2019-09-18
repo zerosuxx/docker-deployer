@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-SERVICE=$1
+SERVICE_NAME=$1
 status=1
 
 while [ $status -ne 0 ]; do
+        SERVICE=`get-docker-service-name $SERVICE_NAME`
         docker exec -it $SERVICE ps > /dev/null 2>&1
         status=$?
 
