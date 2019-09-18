@@ -9,7 +9,7 @@ if [[ -z ${EXEC_ARG} ]]; then
 fi
 
 if [[ -z ${SERVICE} ]]; then
-    echo 'usage: SERVICE=[SERVICE_NAME] exec-cmd-in-docker.sh'
+    echo 'usage: SERVICE=[SERVICE_NAME] exec-cmd-in-docker'
     exit
 else
     SERVICE_NAME=`get-docker-service-name ${SERVICE}`
