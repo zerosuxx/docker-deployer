@@ -10,7 +10,7 @@ status=1
 
 while [ $status -ne 0 ]; do
         SERVICE_NAME=`get-docker-service-name $SERVICE`
-        docker exec $SERVICE_NAME ps > /dev/null 2>&1
+        docker exec $SERVICE_NAME ls > /dev/null 2>&1
         status=$?
 
         [ $status -ne 0 ] && echo "waiting for service: "$SERVICE_NAME && sleep 2
