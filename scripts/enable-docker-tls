@@ -9,6 +9,7 @@ DOCKER_TLS_CA_CERT_ENV="${PREFIX}DOCKER_TLS_CA_CERT"
 DOCKER_TLS_CERT_ENV="${PREFIX}DOCKER_TLS_CERT"
 DOCKER_TLS_KEY_ENV="${PREFIX}DOCKER_TLS_KEY"
 
+mkdir -p ~/.docker/
 printf '%s' "${!DOCKER_TLS_CA_CERT_ENV}" > ~/.docker/ca.pem
 printf '%s' "${!DOCKER_TLS_CERT_ENV}" > ~/.docker/cert.pem
 printf '%s' "${!DOCKER_TLS_KEY_ENV}" > ~/.docker/key.pem
