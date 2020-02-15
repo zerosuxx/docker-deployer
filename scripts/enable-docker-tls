@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+PREFIX=""
+if [[ -n $1 ]]; then
+    PREFIX=$1_
+fi
+
+DOCKER_TLS_CA_CERT_ENV="${PREFIX}DOCKER_TLS_CA_CERT"
+DOCKER_TLS_CERT_ENV="${PREFIX}DOCKER_TLS_CERT"
+DOCKER_TLS_KEY_ENV="${PREFIX}DOCKER_TLS_KEY"
+
+printf '%s' "${!DOCKER_TLS_CA_CERT_ENV}" > ~/.docker/ca.pem
+printf '%s' "${!DOCKER_TLS_CERT_ENV}" > ~/.docker/cert.pem
+printf '%s' "${!DOCKER_TLS_KEY_ENV}" > ~/.docker/key.pem
+
+export DOCKER_TLS_VERIFY=1
