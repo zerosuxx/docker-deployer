@@ -8,10 +8,23 @@ fi
 DOCKER_TLS_CA_CERT_ENV="${PREFIX}DOCKER_TLS_CA_CERT"
 DOCKER_TLS_CERT_ENV="${PREFIX}DOCKER_TLS_CERT"
 DOCKER_TLS_KEY_ENV="${PREFIX}DOCKER_TLS_KEY"
+DOCKER_HOST_ENV="${PREFIX}DOCKER_HOST"
 
-mkdir -p ~/.docker/
-printf '%s' "${!DOCKER_TLS_CA_CERT_ENV}" > ~/.docker/ca.pem
-printf '%s' "${!DOCKER_TLS_CERT_ENV}" > ~/.docker/cert.pem
-printf '%s' "${!DOCKER_TLS_KEY_ENV}" > ~/.docker/key.pem
+dockerTlsCaCert=$(printf '%s' "${!DOCKER_TLS_CA_CERT_ENV}")
+dockerTlsCert=$(printf '%s' "${!DOCKER_TLS_CERT_ENV}")
+dockerTlsKey=$(printf '%s' "${!DOCKER_TLS_KEY_ENV}")
+dockerHost=$(printf '%s' "${!DOCKER_HOST_ENV}")
 
-export DOCKER_TLS_VERIFY=1
+if [[ -n $dockerTlsCaCert ]] && [[ -n $dockerTlsCert ]] && [[ -n $dockerTlsKey ]]; then
+  mkdir -p ~/.docker/
+
+  printf '%s' "${!DOCKER_TLS_CA_CERT_ENV}" > ~/.docker/ca.pem
+  printf '%s' "${!DOCKER_TLS_CERT_ENV}" > ~/.docker/cert.pem
+  printf '%s' "${!DOCKER_TLS_KEY_ENV}" > ~/.docker/key.pem
+
+  export DOCKER_TLS_VERIFY=1
+fi
+
+if [[ -n $dockerHost ]]; then
+    export DOCKER_HOST=$dockerHost
+fi
