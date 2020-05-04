@@ -9,7 +9,7 @@ if [ "$ACTION" = "list" ]; then
   curl --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "$URL/variables/?per_page=100"
   exit
 elif [ "$ACTION" = "get" ] && [ "$KEY" != "" ]; then
-  curl --request --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "$URL/variables/$KEY"
+  curl --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "$URL/variables/$KEY"
   exit
 elif [ "$ACTION" = "set" ] && [ "$KEY" != "" ] && [ "$VALUE" != "" ]; then
   curl --request POST --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "$URL/variables" --form "key=$KEY" --form "value=$VALUE"
