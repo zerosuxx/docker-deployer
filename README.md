@@ -1,6 +1,6 @@
 # docker-deployer
 
-base image: `docker-compose v1.25.4`
+base image: `docker-compose v1.25.5`
 
 installed apps:
 - `bash`
@@ -10,6 +10,7 @@ installed apps:
 - `htop`
 - `curl`
 - `bash-completion`
+- `jq`
 
 see available scripts:
 - run `make scripts` command
