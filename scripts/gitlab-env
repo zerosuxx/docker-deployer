@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+URL=https://gitlab.com/api/v4/projects/$1
+ACTION=$2
+KEY=$3
+VALUE=$4
+
+if [ "$ACTION" = "list" ]; then
+  curl --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "$URL/variables/?per_page=100"
+  exit
+elif [ "$ACTION" = "set" ] && [ "$KEY" != "" ] && [ "$VALUE" != "" ]; then
+  curl --request POST --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "$URL/variables" --form "key=$KEY" --form "value=$VALUE"
+  exit
+elif [ "$ACTION" = "update" ] && [ "$KEY" != "" ] && [ "$VALUE" != "" ]; then
+  curl --request PUT --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "$URL/variables/$KEY" --form "value=$VALUE"
+  exit
+elif [ "$ACTION" = "remove" ] && [ "$KEY" != "" ]; then
+  curl --request DELETE --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "$URL/variables/$KEY"
+  exit
+fi
+
+echo 'usage GITLAB_TOKEN=[TOKEN] gitlab-env [PROJECT_ID OR NAMESPACE%2FPROJECT_NAME] [list|set KEY VALUE|update KEY VALUE|remove KEY]'
