@@ -38,7 +38,7 @@ while read -rd $'\0' file; do
     i=$((i+1))
   fi
   postParams+=" -F fileList[]=$file"
-done < <(find * -type f -name '*.*' -print0)
+done < <(find * -type f -print0)
 
 echo "Uploading files: $i"
 
