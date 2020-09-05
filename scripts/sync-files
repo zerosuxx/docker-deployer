@@ -44,5 +44,12 @@ echo "Uploading files: $i"
 
 if [ $i -gt 0 ]
 then
-  curl --fail -sS -H "Auth-Token: $TOKEN" $postParams "$SYNCER_URL" | jq | exit 1
+  syncedFiles=$(curl --fail -sS -H "Auth-Token: $TOKEN" $postParams "$SYNCER_URL")
+  if [ "$syncedFiles" != "" ]
+  then
+    echo "$syncedFiles" | jq
+  else
+    echo "Error: uploading files failed!"
+    exit 1
+  fi
 fi
