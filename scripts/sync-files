@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 DIR="$1"
 SYNCER_URL="$2"
 TOKEN="$3"
@@ -13,8 +15,14 @@ cd "$DIR" || exit
 
 echo 'Start syncing files...'
 
-echo "Fetching remote files info..."
-remoteFiles=$(curl --fail -s -H "Auth-Token: $TOKEN" "$SYNCER_URL?action=files" | jq)
+echo "Fetching remote file modification times..."
+remoteFiles=$(curl --fail -sS -H "Auth-Token: $TOKEN" "$SYNCER_URL?action=files" | jq)
+
+if [ "$remoteFiles" == "" ]
+then
+  echo "Error: fetching remote file modification times failed!"
+  exit 1
+fi
 
 postParams=""
 i=0
@@ -22,11 +30,10 @@ while read -rd $'\0' file; do
   modifiedTime=$(date -r "$file" "+%s")
   remoteModifiedTime=$(echo "$remoteFiles" | jq -r '."'"$file"'"')
 
-  if [ "$remoteModifiedTime" == null ] || [ "$modifiedTime" != "$remoteModifiedTime" ]
+  if [ "$remoteModifiedTime" == null ] || [ "$modifiedTime" -lt "$remoteModifiedTime" ]
   then
-    #echo "$file"
     postParams+=" -F files[]=@$file"
-    postParams+=" -F filePaths[][]=$file"
+    postParams+=" -F filePaths[]=$file"
 
     i=$((i+1))
   fi
@@ -35,4 +42,7 @@ done < <(find * -type f -name '*.*' -print0)
 
 echo "Uploading files: $i"
 
-curl --fail -H "Auth-Token: $TOKEN" $postParams "$SYNCER_URL"
+if [ $i -gt 0 ]
+then
+  curl --fail -sS -H "Auth-Token: $TOKEN" $postParams "$SYNCER_URL" | jq | exit 1
+fi
