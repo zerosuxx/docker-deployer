@@ -1,0 +1,38 @@
+#!/bin/bash
+
+DIR="$1"
+SYNCER_URL="$2"
+TOKEN="$3"
+
+if [[ -z "$DIR" ]] || [[ -z "$SYNCER_URL" ]] || [[ -z "$TOKEN" ]]; then
+  echo 'Usage sync-files DIR SYNCER_URL TOKEN'
+  exit
+fi
+
+cd "$DIR" || exit
+
+echo 'Start syncing files...'
+
+echo "Fetching remote files info..."
+remoteFiles=$(curl --fail -s -H "Auth-Token: $TOKEN" "$SYNCER_URL?action=files" | jq)
+
+postParams=""
+i=0
+while read -rd $'\0' file; do
+  modifiedTime=$(date -r "$file" "+%s")
+  remoteModifiedTime=$(echo "$remoteFiles" | jq -r '."'"$file"'"')
+
+  if [ "$remoteModifiedTime" == null ] || [ "$modifiedTime" != "$remoteModifiedTime" ]
+  then
+    #echo "$file"
+    postParams+=" -F files[]=@$file"
+    postParams+=" -F filePaths[][]=$file"
+
+    i=$((i+1))
+  fi
+  postParams+=" -F fileList[]=$file"
+done < <(find * -type f -name '*.*' -print0)
+
+echo "Uploading files: $i"
+
+curl --fail -H "Auth-Token: $TOKEN" $postParams "$SYNCER_URL"
