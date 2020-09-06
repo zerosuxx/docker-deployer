@@ -1,5 +1,5 @@
 #!/bin/bash
-# version 0.1.1
+# version 0.1.2
 set -e
 
 DIR="$1"
@@ -30,7 +30,7 @@ while read -rd $'\0' file; do
   modifiedTime=$(date -r "$file" "+%s")
   remoteModifiedTime=$(echo "$remoteFiles" | jq -r '."'"$file"'"')
 
-  if [ "$remoteModifiedTime" == null ] || [ "$modifiedTime" -lt "$remoteModifiedTime" ]
+  if [ "$remoteModifiedTime" == null ] || [ "$modifiedTime" -gt "$remoteModifiedTime" ]
   then
     postParams+=" -F files[]=@$file"
     postParams+=" -F filePaths[]=$file"
@@ -44,7 +44,7 @@ echo "Uploading files: $i"
 
 if [ $i -gt 0 ]
 then
-  syncedFiles=$(curl --fail -sS -H "Auth-Token: $SYNCER_TOKEN" $postParams "$SYNCER_URL")
+  syncedFiles=$(curl -sS -H "Auth-Token: $SYNCER_TOKEN" $postParams "$SYNCER_URL")
   if [ "$syncedFiles" != "" ]
   then
     echo "$syncedFiles" | jq
