@@ -1,13 +1,13 @@
 #!/bin/bash
-
+# version 0.1.1
 set -e
 
 DIR="$1"
 SYNCER_URL="$2"
-TOKEN="$3"
+SYNCER_TOKEN="$3"
 
-if [[ -z "$DIR" ]] || [[ -z "$SYNCER_URL" ]] || [[ -z "$TOKEN" ]]; then
-  echo 'Usage sync-files DIR SYNCER_URL TOKEN'
+if [[ -z "$DIR" ]] || [[ -z "$SYNCER_URL" ]] || [[ -z "$SYNCER_TOKEN" ]]; then
+  echo 'Usage sync-files DIR SYNCER_URL SYNCER_TOKEN'
   exit
 fi
 
@@ -16,7 +16,7 @@ cd "$DIR" || exit
 echo 'Start syncing files...'
 
 echo "Fetching remote file modification times..."
-remoteFiles=$(curl --fail -sS -H "Auth-Token: $TOKEN" "$SYNCER_URL?action=files" | jq)
+remoteFiles=$(curl --fail -sS -H "Auth-Token: $SYNCER_TOKEN" "$SYNCER_URL?action=files" | jq)
 
 if [ "$remoteFiles" == "" ]
 then
@@ -44,7 +44,7 @@ echo "Uploading files: $i"
 
 if [ $i -gt 0 ]
 then
-  syncedFiles=$(curl --fail -sS -H "Auth-Token: $TOKEN" $postParams "$SYNCER_URL")
+  syncedFiles=$(curl --fail -sS -H "Auth-Token: $SYNCER_TOKEN" $postParams "$SYNCER_URL")
   if [ "$syncedFiles" != "" ]
   then
     echo "$syncedFiles" | jq
