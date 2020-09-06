@@ -1,5 +1,5 @@
 #!/bin/bash
-# version 0.1.2
+# version 0.2.0
 set -e
 
 DIR="$1"
@@ -42,14 +42,11 @@ done < <(find * -type f -print0)
 
 echo "Uploading files: $i"
 
-if [ $i -gt 0 ]
+syncedFiles=$(curl -sS -H "Auth-Token: $SYNCER_TOKEN" $postParams "$SYNCER_URL")
+if [ "$syncedFiles" != "" ]
 then
-  syncedFiles=$(curl -sS -H "Auth-Token: $SYNCER_TOKEN" $postParams "$SYNCER_URL")
-  if [ "$syncedFiles" != "" ]
-  then
-    echo "$syncedFiles" | jq
-  else
-    echo "Error: uploading files failed!"
-    exit 1
-  fi
+  echo "$syncedFiles" | jq
+else
+  echo "Error: uploading files failed!"
+  exit 1
 fi
