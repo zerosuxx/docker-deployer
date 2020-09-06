@@ -1,13 +1,18 @@
 #!/bin/bash
-# version 0.2.0
+# version 0.4.0
 set -e
 
 DIR="$1"
 SYNCER_URL="$2"
 SYNCER_TOKEN="$3"
+FILES_CHUNK_SIZE="$4"
+
+if [[ -z ${FILES_CHUNK_SIZE} ]]; then
+    FILES_CHUNK_SIZE=20
+fi
 
 if [[ -z "$DIR" ]] || [[ -z "$SYNCER_URL" ]] || [[ -z "$SYNCER_TOKEN" ]]; then
-  echo 'Usage sync-files DIR SYNCER_URL SYNCER_TOKEN'
+  echo "Usage sync-files DIR SYNCER_URL SYNCER_TOKEN [FILES_CHUNK_SIZE=${FILES_CHUNK_SIZE}]"
   exit
 fi
 
@@ -15,38 +20,47 @@ cd "$DIR" || exit
 
 echo 'Start syncing files...'
 
-echo "Fetching remote file modification times..."
-remoteFiles=$(curl --fail -sS -H "Auth-Token: $SYNCER_TOKEN" "$SYNCER_URL?action=files" | jq)
+echo "Fetching remote file list..."
+remoteFiles=$(curl --fail -sS -H "Auth-Token: $SYNCER_TOKEN" "$SYNCER_URL?action=files") || exit 1
 
-if [ "$remoteFiles" == "" ]
-then
-  echo "Error: fetching remote file modification times failed!"
-  exit 1
-fi
-
-postParams=""
-i=0
+syncedFileList=()
+fileList=()
 while read -rd $'\0' file; do
   modifiedTime=$(date -r "$file" "+%s")
   remoteModifiedTime=$(echo "$remoteFiles" | jq -r '."'"$file"'"')
 
-  if [ "$remoteModifiedTime" == null ] || [ "$modifiedTime" -gt "$remoteModifiedTime" ]
-  then
-    postParams+=" -F files[]=@$file"
-    postParams+=" -F filePaths[]=$file"
-
-    i=$((i+1))
+  if [ "$remoteModifiedTime" == null ] || [ "$modifiedTime" -gt "$remoteModifiedTime" ]; then
+    syncedFileList+=("$file")
   fi
-  postParams+=" -F fileList[]=$file"
+
+  fileList+=("$file")
 done < <(find * -type f -print0)
 
-echo "Uploading files: $i"
+syncedFilesCount=${#syncedFileList[@]}
+echo "Syncing files count: ${syncedFilesCount}"
 
-syncedFiles=$(curl -sS -H "Auth-Token: $SYNCER_TOKEN" $postParams "$SYNCER_URL")
-if [ "$syncedFiles" != "" ]
-then
-  echo "$syncedFiles" | jq
-else
-  echo "Error: uploading files failed!"
-  exit 1
-fi
+fileListJson=$(printf '%s\n' "${fileList[@]}" | jq -R . | jq -s . | jq '@uri')
+postParams=""
+chunkIndex=0
+i=0
+for syncedFile in "${syncedFileList[@]}"; do
+  postParams+=" -F files[]=@$syncedFile"
+  postParams+=" -F filePaths[]=$syncedFile"
+  postParams+=" -F fileList=$fileListJson"
+
+  chunkIndex=$((chunkIndex+1))
+  i=$((i+1))
+  if [ $chunkIndex -ge $FILES_CHUNK_SIZE ] || [ $i -eq $syncedFilesCount ]; then
+    echo "Post params length: ${#postParams}"
+    echo "Chunk size: ${chunkIndex}"
+
+    syncedFiles=$(curl --fail -sS -H "Auth-Token: $SYNCER_TOKEN" $postParams "$SYNCER_URL") || exit 1
+    echo "$syncedFiles" | jq || echo "$syncedFiles"
+
+    postParams=""
+    chunkIndex=0
+  fi
+done
+
+echo "Synced files count: ${i}"
+echo "Syncing completed!"
