@@ -1,4 +1,4 @@
-FROM docker/compose:1.25.5
+FROM docker/compose:1.26.2
 
 RUN apk add --no-cache bash nano git make htop curl bash-completion jq \
 	&& rm -rf /tmp/* /var/cache/apk/*

@@ -1,6 +1,6 @@
 # docker-deployer
 
-base image: `docker-compose v1.25.5`
+base image: `docker-compose v1.26.2`
 
 installed apps:
 - `bash`
