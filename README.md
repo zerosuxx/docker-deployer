@@ -11,6 +11,7 @@ installed apps:
 - `curl`
 - `bash-completion`
 - `jq`
+- `openssh-client`
 
 see available scripts:
 - run `make scripts` command
