@@ -15,3 +15,4 @@ installed apps:
 
 see available scripts:
 - run `make scripts` command
+
