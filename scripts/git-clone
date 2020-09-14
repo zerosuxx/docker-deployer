@@ -1,0 +1,17 @@
+#!/bin/bash
+
+URL="$1"
+DIR="$2"
+
+if [[ -z "$URL" ]] || [[ -z "$DIR" ]]; then
+    echo 'Usage git-clone URL DIR'
+    exit
+fi
+
+SSH_KEY_FILE="/tmp/$(basename $URL '.git').key"
+
+echo "$GIT_SSH_KEY" > $SSH_KEY_FILE
+chmod 400 $SSH_KEY_FILE
+
+export GIT_SSH_COMMAND="ssh -o IdentityFile=${SSH_KEY_FILE} -o StrictHostKeyChecking=no"
+git clone --depth 1 $URL $DIR
