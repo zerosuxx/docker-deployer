@@ -1,6 +1,8 @@
 FROM docker/compose:1.28.2
 
-RUN apk add --no-cache bash nano git make htop curl bash-completion jq openssh-client \
+RUN echo 'http://dl-cdn.alpinelinux.org/alpine/v3.13/main' >> /etc/apk/repositories
+
+RUN apk add --no-cache --update curl bash nano git make htop bash-completion jq openssh-client \
 	&& rm -rf /tmp/* /var/cache/apk/*
 
 COPY scripts/ /usr/local/bin/
