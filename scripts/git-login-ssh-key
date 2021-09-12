@@ -1,0 +1,16 @@
+#!/bin/bash
+
+NAME="$1"
+
+if [[ -z "$NAME" ]] || [[ -z "$GIT_SSH_KEY" ]]; then
+    echo 'export GIT_SSH_KEY="-----BEGIN RSA PRIVATE KEY-----..."'
+    echo 'Usage git-login-ssh-key NAME'
+    exit
+fi
+
+SSH_KEY_FILE="/tmp/$NAME.key"
+
+echo "$GIT_SSH_KEY" > "$SSH_KEY_FILE"
+chmod 400 "$SSH_KEY_FILE"
+
+export GIT_SSH_COMMAND="ssh -o IdentityFile=${SSH_KEY_FILE} -o StrictHostKeyChecking=no"
