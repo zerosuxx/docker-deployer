@@ -5,4 +5,4 @@ push:
 	docker push zerosuxx/deployer
 
 scripts:
-	ls scripts/
+	ls bin/
