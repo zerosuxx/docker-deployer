@@ -8,9 +8,10 @@ if [[ -z "$NAME" ]] || [[ -z "$GIT_SSH_KEY" ]]; then
     exit
 fi
 
-SSH_KEY_FILE="/tmp/$NAME.key"
+SSH_KEY_FILE="/tmp/$NAME"
 
 echo "$GIT_SSH_KEY" > "$SSH_KEY_FILE"
 chmod 400 "$SSH_KEY_FILE"
+ssh-keygen -y -f "$SSH_KEY_FILE" > "$SSH_KEY_FILE.pub"
 
 export GIT_SSH_COMMAND="ssh -o IdentityFile=${SSH_KEY_FILE} -o StrictHostKeyChecking=no"
