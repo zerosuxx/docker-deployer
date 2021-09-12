@@ -2,8 +2,6 @@ FROM docker/compose:1.29.2
 
 ARG BUILDX_VERSION='0.6.3'
 
-RUN echo 'https://dl-cdn.alpinelinux.org/alpine/v3.13/main' >> /etc/apk/repositories
-
 RUN apk add --no-cache --update curl bash nano git make htop bash-completion jq openssh-client \
 	&& rm -rf /tmp/* /var/cache/apk/*
 
