@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+set -e
+
+echo "Artifact0ry deployer 0.1.0"
+echo "--------------------------"
+echo ""
+
+TARGET=$1
+PACKAGE_NAMESPACE=$2
+FILE_NAME=$3
+
+if [ -z "$ARTIFACTORY_URL" ]; then
+  ARTIFACTORY_URL="https://repo.zer0.hu/artifactory"
+fi
+
+if [ -z "$REPOSITORY_NAME" ]; then
+  REPOSITORY_NAME="releases"
+fi
+
+if [ -z "$APP_VERSION" ]; then
+  APP_VERSION=`git describe --tags`
+fi
+
+if [ -z "$TARGET" ] || [ -z "$PACKAGE_NAMESPACE" ] || [ -z "$ARTIFACTORY_ACCESS_TOKEN" ]; then
+  echo "export ARTIFACTORY_ACCESS_TOKEN=$(echo $ARTIFACTORY_ACCESS_TOKEN | cut -b 1-5)..."
+  echo "export ARTIFACTORY_URL=$ARTIFACTORY_URL"
+  echo "export REPOSITORY_NAME=$REPOSITORY_NAME"
+  echo "export APP_VERSION=$APP_VERSION"
+  echo
+  echo "Usage: artifact0ry-deployer TARGET_FILE_OR_FOLDER PACKAGE_NAMESPACE [FILE_NAME]"
+  exit 1
+fi
+
+function uploadFile() {
+    targetFile="$1"
+    if [ "$FILE_NAME" == "" ]; then
+      FILE_NAME=`basename "$targetFile"`
+    fi
+    FILE_SHA1=$(sha1sum "$targetFile" | awk '{print $1}')
+    FILE_URL="$ARTIFACTORY_URL/$REPOSITORY_NAME/$PACKAGE_NAMESPACE/$APP_VERSION/$FILE_NAME"
+
+    echo "$FILE_URL"
+
+    curl \
+        --fail \
+        -H "Authorization: Bearer $ARTIFACTORY_ACCESS_TOKEN" \
+        -X PUT \
+        -T "$targetFile" \
+        "$FILE_URL"
+
+    echo
+
+    curl \
+        --fail \
+        -H "Authorization: Bearer $ARTIFACTORY_ACCESS_TOKEN" \
+        -H "X-Checksum-Deploy: true" \
+        -H "X-Checksum-Sha1: $FILE_SHA1" \
+        -X PUT \
+        -T "$targetFile" \
+        "$FILE_URL"
+}
+
+if [[ -d "$TARGET" ]]; then
+    for binary in $TARGET/*; do
+      uploadFile "$binary"
+    done
+else
+  uploadFile "$TARGET"
+fi
+
+
