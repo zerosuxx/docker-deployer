@@ -4,7 +4,7 @@ set -e
 
 echo "Artifact0ry deployer 0.1.1"
 echo "--------------------------"
-echo ""
+echo
 
 TARGET=$1
 PACKAGE_NAMESPACE=$2
@@ -34,11 +34,12 @@ fi
 
 function uploadFile() {
     targetFile="$1"
-    if [ "$FILE_NAME" == "" ]; then
-      FILE_NAME=`basename "$targetFile"`
+    fileName="$FILE_NAME"
+    if [ "$fileName" == "" ]; then
+      fileName=`basename "$targetFile"`
     fi
     FILE_SHA1=$(sha1sum "$targetFile" | awk '{print $1}')
-    FILE_URL="$ARTIFACTORY_URL/$REPOSITORY_NAME/$PACKAGE_NAMESPACE/$APP_VERSION/$FILE_NAME"
+    FILE_URL="$ARTIFACTORY_URL/$REPOSITORY_NAME/$PACKAGE_NAMESPACE/$APP_VERSION/$fileName"
 
     echo "$FILE_URL"
 
@@ -64,8 +65,8 @@ function uploadFile() {
 }
 
 if [[ -d "$TARGET" ]]; then
-    for binary in $TARGET/*; do
-      uploadFile "$binary"
+    for targetFile in $TARGET/*; do
+      uploadFile "$targetFile"
     done
 else
   uploadFile "$TARGET"
