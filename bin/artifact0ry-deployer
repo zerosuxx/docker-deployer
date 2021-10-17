@@ -2,7 +2,7 @@
 
 set -e
 
-echo "Artifact0ry deployer 0.1.4"
+echo "Artifact0ry deployer 0.1.5"
 echo "--------------------------"
 echo
 
@@ -11,37 +11,38 @@ PACKAGE_NAMESPACE=$2
 FILE_NAME=$3
 
 if [ -z "$ARTIFACTORY_URL" ]; then
-  ARTIFACTORY_URL="https://repo.zer0.hu/artifactory"
+    ARTIFACTORY_URL="https://repo.zer0.hu/artifactory"
 fi
 
 if [ -z "$REPOSITORY_NAME" ]; then
-  REPOSITORY_NAME="releases"
+    REPOSITORY_NAME="releases"
 fi
 
 if [ -z "$APP_VERSION" ]; then
-  APP_VERSION=`git describe --tags`
+    APP_VERSION=`git describe --tags`
 fi
 
 if [ -z "$TARGET" ] || [ -z "$PACKAGE_NAMESPACE" ] || [ -z "$ARTIFACTORY_ACCESS_TOKEN" ]; then
-  echo "export ARTIFACTORY_ACCESS_TOKEN=$(echo $ARTIFACTORY_ACCESS_TOKEN | cut -b 1-5)..."
-  echo "export ARTIFACTORY_URL=$ARTIFACTORY_URL"
-  echo "export REPOSITORY_NAME=$REPOSITORY_NAME"
-  echo "export APP_VERSION=$APP_VERSION"
-  echo
-  echo "Usage: artifact0ry-deployer TARGET_FILE_OR_FOLDER PACKAGE_NAMESPACE [FILE_NAME]"
-  exit 1
+    echo "export ARTIFACTORY_ACCESS_TOKEN=$(echo $ARTIFACTORY_ACCESS_TOKEN | cut -b 1-5)..."
+    echo "export ARTIFACTORY_URL=$ARTIFACTORY_URL"
+    echo "export REPOSITORY_NAME=$REPOSITORY_NAME"
+    echo "export APP_VERSION=$APP_VERSION"
+    echo
+    echo "Usage: artifact0ry-deployer TARGET_FILE_OR_FOLDER PACKAGE_NAMESPACE [FILE_NAME]"
+    exit 1
 fi
 
 function uploadFile() {
     targetFile="$1"
     fileName="$FILE_NAME"
     if [ "$fileName" == "" ]; then
-      fileName=`basename "$targetFile"`
+        fileName=`basename "$targetFile"`
     fi
-    fileSha1=$(sha1sum "$targetFile" | awk '{print $1}')
     fileUrl="$ARTIFACTORY_URL/$REPOSITORY_NAME/$PACKAGE_NAMESPACE/$APP_VERSION/$fileName"
+    fileSha1=$(sha1sum "$targetFile" | awk '{print $1}')
 
     echo "$fileUrl"
+    echo "$fileSha1"
 
     curl \
         --fail \
@@ -49,10 +50,6 @@ function uploadFile() {
         -X PUT \
         -T "$targetFile" \
         "$fileUrl"
-
-    echo
-    echo $fileSha1
-    sleep 1
 
     curl \
         --fail \
@@ -66,10 +63,10 @@ function uploadFile() {
 
 if [[ -d "$TARGET" ]]; then
     for file in $TARGET/*; do
-      uploadFile "$file"
+        uploadFile "$file"
     done
 else
-  uploadFile "$TARGET"
+    uploadFile "$TARGET"
 fi
 
 
