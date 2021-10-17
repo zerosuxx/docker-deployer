@@ -15,7 +15,11 @@ installed apps:
 - `bash-completion`
 - `jq`
 - `openssh-client`
+- `docker buildx`
+- `depl0yer`
 
 see available scripts:
 - run `make scripts` command
 
+login into container
+- run `make sh` command
