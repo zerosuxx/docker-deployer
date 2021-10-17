@@ -44,7 +44,6 @@ function uploadFile() {
     echo "$fileUrl"
 
     curl \
-        --silent \
         --fail \
         --http1.1 \
         -H "Authorization: Bearer $ARTIFACTORY_ACCESS_TOKEN" \
@@ -54,9 +53,9 @@ function uploadFile() {
 
     echo
     echo $fileSha1
+    sleep 1
 
     curl \
-        --silent \
         --fail \
         --http1.1 \
         -H "Authorization: Bearer $ARTIFACTORY_ACCESS_TOKEN" \
