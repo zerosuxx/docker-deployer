@@ -2,7 +2,7 @@
 
 set -e
 
-echo "Artifact0ry deployer 0.1.2"
+echo "Artifact0ry deployer 0.1.3"
 echo "--------------------------"
 echo
 
@@ -38,35 +38,38 @@ function uploadFile() {
     if [ "$fileName" == "" ]; then
       fileName=`basename "$targetFile"`
     fi
-    FILE_SHA1=$(sha1sum "$targetFile" | awk '{print $1}')
-    FILE_URL="$ARTIFACTORY_URL/$REPOSITORY_NAME/$PACKAGE_NAMESPACE/$APP_VERSION/$fileName"
+    fileSha1=$(sha1sum "$targetFile" | awk '{print $1}')
+    fileUrl="$ARTIFACTORY_URL/$REPOSITORY_NAME/$PACKAGE_NAMESPACE/$APP_VERSION/$fileName"
 
-    echo "$FILE_URL"
+    echo "$fileUrl"
 
     curl \
+        --silent \
         --fail \
         --http1.1 \
         -H "Authorization: Bearer $ARTIFACTORY_ACCESS_TOKEN" \
         -X PUT \
         -T "$targetFile" \
-        "$FILE_URL"
+        "$fileUrl"
 
     echo
+    echo $fileSha1
 
     curl \
+        --silent \
         --fail \
         --http1.1 \
         -H "Authorization: Bearer $ARTIFACTORY_ACCESS_TOKEN" \
         -H "X-Checksum-Deploy: true" \
-        -H "X-Checksum-Sha1: $FILE_SHA1" \
+        -H "X-Checksum-Sha1: $fileSha1" \
         -X PUT \
         -T "$targetFile" \
-        "$FILE_URL"
+        "$fileUrl"
 }
 
 if [[ -d "$TARGET" ]]; then
-    for targetFile in $TARGET/*; do
-      uploadFile "$targetFile"
+    for file in $TARGET/*; do
+      uploadFile "$file"
     done
 else
   uploadFile "$TARGET"
