@@ -2,7 +2,7 @@
 
 set -e
 
-echo "Artifact0ry deployer 0.1.1"
+echo "Artifact0ry deployer 0.1.2"
 echo "--------------------------"
 echo
 
