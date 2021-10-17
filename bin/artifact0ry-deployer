@@ -2,7 +2,7 @@
 
 set -e
 
-echo "Artifact0ry deployer 0.1.3"
+echo "Artifact0ry deployer 0.1.4"
 echo "--------------------------"
 echo
 
@@ -45,7 +45,6 @@ function uploadFile() {
 
     curl \
         --fail \
-        --http1.1 \
         -H "Authorization: Bearer $ARTIFACTORY_ACCESS_TOKEN" \
         -X PUT \
         -T "$targetFile" \
@@ -57,7 +56,6 @@ function uploadFile() {
 
     curl \
         --fail \
-        --http1.1 \
         -H "Authorization: Bearer $ARTIFACTORY_ACCESS_TOKEN" \
         -H "X-Checksum-Deploy: true" \
         -H "X-Checksum-Sha1: $fileSha1" \
