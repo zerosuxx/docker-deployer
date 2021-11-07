@@ -3,7 +3,7 @@ FROM docker/compose:1.29.2
 ARG BUILDX_VERSION='0.6.3'
 ARG DEPL0YER_VERSION='0.4.0'
 
-RUN apk add --no-cache --update curl bash nano git make htop bash-completion jq openssh-client \
+RUN apk add --no-cache --update curl bash nano git make htop bash-completion jq openssh-client gettext \
 	&& rm -rf /tmp/* /var/cache/apk/*
 
 RUN mkdir -p ~/.docker/cli-plugins/ \
