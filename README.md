@@ -17,6 +17,7 @@ installed apps:
 - `openssh-client`
 - `docker buildx`
 - `depl0yer`
+- `gettext` (envsubst)
 
 see available scripts:
 - run `make scripts` command
