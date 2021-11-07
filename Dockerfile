@@ -1,14 +1,18 @@
-FROM docker/compose:1.29.2
+FROM docker:latest
 
+ARG DOCKER_COMPOSE_VERSION='v2.1.0'
 ARG BUILDX_VERSION='0.6.3'
 ARG DEPL0YER_VERSION='0.4.0'
 
-RUN apk add --no-cache --update curl bash nano git make htop bash-completion jq openssh-client gettext \
+RUN apk add --no-cache --update curl wget bash nano git make htop bash-completion jq openssh-client gettext \
 	&& rm -rf /tmp/* /var/cache/apk/*
+
+RUN curl -fL -o /usr/local/bin/docker-compose \
+    https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-linux-x86_64
 
 RUN mkdir -p ~/.docker/cli-plugins/ \
     && cd ~/.docker/cli-plugins/ \
-    && wget https://github.com/docker/buildx/releases/download/v${BUILDX_VERSION}/buildx-v${BUILDX_VERSION}.linux-amd64 \
+    && curl -fL -O https://github.com/docker/buildx/releases/download/v${BUILDX_VERSION}/buildx-v${BUILDX_VERSION}.linux-amd64 \
     && mv buildx-v${BUILDX_VERSION}.linux-amd64 docker-buildx \
     && chmod +x docker-buildx
 

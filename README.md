@@ -3,7 +3,7 @@
 [![Docker Image CI](https://github.com/zerosuxx/docker-deployer/actions/workflows/docker-image.yml/badge.svg)](https://github.com/zerosuxx/docker-deployer/actions/workflows/docker-image.yml)
 [![Docker Pulls](https://img.shields.io/docker/pulls/zerosuxx/deployer)](https://hub.docker.com/r/zerosuxx/deployer)
 
-base image: `docker-compose v1.29.2`
+base image: `docker:latest`
 
 installed apps:
 - `bash`
@@ -15,6 +15,7 @@ installed apps:
 - `bash-completion`
 - `jq`
 - `openssh-client`
+- `docker-compose`
 - `docker buildx`
 - `depl0yer`
 - `gettext` (envsubst)
