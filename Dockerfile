@@ -1,9 +1,9 @@
 FROM docker:latest
 
-ARG DOCKER_COMPOSE_VERSION='v2.2.2'
+ARG DOCKER_COMPOSE_VERSION='2.2.2'
 ARG BUILDX_VERSION='0.7.1'
 ARG DEPL0YER_VERSION='0.4.0'
-ARG KUBECTL_VERSION='v1.22.4'
+ARG KUBECTL_VERSION='1.22.4'
 
 RUN apk add --no-cache --update \
     curl \
@@ -22,7 +22,7 @@ RUN apk add --no-cache --update \
 RUN if [ `arch` == 'x86_64' ]; then echo "amd64" > /arch; else echo "arm64" > /arch; fi
 
 RUN curl -fL -o /usr/local/bin/docker-compose \
-    https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-linux-`arch`
+    https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-linux-`arch`
 
 RUN mkdir -p ~/.docker/cli-plugins/ \
     && cd ~/.docker/cli-plugins/ \
@@ -34,7 +34,7 @@ RUN curl -fL -o /usr/local/bin/depl0yer \
     https://repo.zer0.hu/artifactory/releases/zerosuxx/depl0yer/${DEPL0YER_VERSION}/depl0yer-${DEPL0YER_VERSION}-linux-`arch`
 
 RUN curl -fL -o /usr/local/bin/kubectl \
-    https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/`cat /arch`/kubectl
+    https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/`cat /arch`/kubectl
 
 COPY bin/ /usr/local/bin/
 
