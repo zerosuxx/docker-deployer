@@ -1,13 +1,8 @@
 build:
 	docker build -t zerosuxx/deployer .
 
-build-and-push-amd64:
-	docker buildx build --platform linux/amd64 -t zerosuxx/deployer --push .
-
-build-and-push-arm64:
-	docker buildx build --platform linux/arm64 -t zerosuxx/deployer --push .
-
-build-and-push-all: build-and-push-amd64 build-and-push-arm64
+build-and-push-all:
+	docker buildx build --platform linux/amd64,linux/arm64 -t zerosuxx/deployer --push .
 
 sh:
 	docker run --rm -it -v $(PWD)/:/app -w /app zerosuxx/deployer
