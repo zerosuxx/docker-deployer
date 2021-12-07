@@ -19,6 +19,7 @@ installed apps:
 - `docker buildx`
 - `depl0yer`
 - `gettext` (envsubst)
+- `kubectl`
 
 see available scripts:
 - run `make scripts` command
