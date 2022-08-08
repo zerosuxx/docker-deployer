@@ -1,9 +1,9 @@
 FROM docker:latest
 
-ARG DOCKER_COMPOSE_VERSION='2.2.2'
-ARG BUILDX_VERSION='0.7.1'
+ARG DOCKER_COMPOSE_VERSION='2.9.0'
+ARG BUILDX_VERSION='0.8.2'
 ARG DEPL0YER_VERSION='0.4.0'
-ARG KUBECTL_VERSION='1.22.4'
+ARG KUBECTL_VERSION='1.24.3'
 
 RUN apk add --no-cache --update \
     curl \
@@ -17,6 +17,7 @@ RUN apk add --no-cache --update \
     jq \
     openssh-client \
     gettext \
+    iproute2 \
 	&& rm -rf /tmp/* /var/cache/apk/*
 
 RUN if [ `arch` == 'x86_64' ]; then echo "amd64" > /arch; else echo "arm64" > /arch; fi
