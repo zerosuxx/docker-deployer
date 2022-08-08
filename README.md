@@ -5,7 +5,8 @@
 
 base image: `docker:latest`
 
-installed apps:
+### installed apps:
+#### base
 - `bash`
 - `nano`
 - `git`
@@ -15,10 +16,12 @@ installed apps:
 - `bash-completion`
 - `jq`
 - `openssh-client`
+- `gettext` (envsubst)
+- `depl0yer`
+
+#### full
 - `docker-compose`
 - `docker buildx`
-- `depl0yer`
-- `gettext` (envsubst)
 - `kubectl`
 
 see available scripts:
