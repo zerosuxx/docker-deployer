@@ -3,7 +3,7 @@
 [![Docker Image CI](https://github.com/zerosuxx/docker-deployer/actions/workflows/docker-image.yml/badge.svg)](https://github.com/zerosuxx/docker-deployer/actions/workflows/docker-image.yml)
 [![Docker Pulls](https://img.shields.io/docker/pulls/zerosuxx/deployer)](https://hub.docker.com/r/zerosuxx/deployer)
 
-base image: `docker:latest`
+base image: `docker:latest` (included docker-compose and buildx plugins)
 
 ### installed apps:
 #### base
@@ -20,8 +20,6 @@ base image: `docker:latest`
 - `depl0yer`
 
 #### full
-- `docker-compose`
-- `docker buildx`
 - `kubectl`
 
 see available scripts:
