@@ -17,6 +17,7 @@ base image: `docker:latest` (included docker-compose and buildx plugins)
 - `jq`
 - `openssh-client`
 - `gettext` (envsubst)
+- `iproute2` (ip)
 - `depl0yer`
 
 #### full
