@@ -15,7 +15,7 @@ RUN apk add --no-cache --update \
     iproute2 \
     && rm -rf /tmp/* /var/cache/apk/*
 
-ARG DEPL0YER_VERSION='0.5.0'
+ARG DEPL0YER_VERSION='0.5.1'
 
 RUN curl -fL -o /usr/local/bin/depl0yer \
     https://repo.zer0.hu/artifactory/releases/zerosuxx/depl0yer/${DEPL0YER_VERSION}/depl0yer-${DEPL0YER_VERSION}-linux-`arch`
