@@ -13,6 +13,7 @@ RUN apk add --no-cache --update \
     openssh-client \
     gettext \
     iproute2 \
+    dumb-init \
     && rm -rf /tmp/* /var/cache/apk/*
 
 ARG DEPL0YER_VERSION='0.5.1'
