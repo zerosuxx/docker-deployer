@@ -20,6 +20,7 @@
 - `openssh-client`
 - `gettext` (envsubst)
 - `iproute2` (ip)
+- `dumb-init`
 - `depl0yer`
 
 #### full
