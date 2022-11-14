@@ -29,6 +29,7 @@ ENTRYPOINT ["entrypoint"]
 
 CMD ["bash"]
 
+
 FROM base AS full
 
 ARG KUBECTL_VERSION='1.24.3'
@@ -37,3 +38,5 @@ RUN if [ `arch` == 'x86_64' ]; then echo "amd64" > /arch; else echo "arm64" > /a
 
 RUN curl -fL -o /usr/local/bin/kubectl \
     https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/`cat /arch`/kubectl
+    
+RUN chmod +x /usr/local/bin/*
