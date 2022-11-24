@@ -25,6 +25,8 @@ COPY bin/ /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/*
 
+RUN if [ `arch` == 'x86_64' ]; then echo "amd64" > /arch; else echo "arm64" > /arch; fi
+
 ENTRYPOINT ["entrypoint"]
 
 CMD ["bash"]
@@ -33,8 +35,6 @@ CMD ["bash"]
 FROM base AS full
 
 ARG KUBECTL_VERSION='1.24.3'
-
-RUN if [ `arch` == 'x86_64' ]; then echo "amd64" > /arch; else echo "arm64" > /arch; fi
 
 RUN curl -fL -o /usr/local/bin/kubectl \
     https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/`cat /arch`/kubectl
