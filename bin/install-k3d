@@ -10,3 +10,14 @@ if [[ "$@" == *"--wait-for-docker"* ]]; then
     echo -n "Waiting for dockerd"
     until $(curl --output /dev/null --silent --head http://localhost:2375); do printf '.'; sleep 5; done
 fi
+
+if [[ "$@" == *"--create-cluster"* ]]; then
+    k3d cluster create --no-lb --api-port 16443
+fi
+
+if [[ "$@" == *"--expose-config"* ]]; then
+    mkdir -p /tmp/kube-config
+    cat ~/.kube/config > /tmp/kube-config/index.html
+    chmod -R 777 /tmp/kube-config
+    docker run --rm -p 8080:80 -v /tmp/kube-config:/usr/share/nginx/html nginx:alpine
+fi
