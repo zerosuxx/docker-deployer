@@ -16,8 +16,8 @@ if [[ "$@" == *"--create-cluster"* ]]; then
 fi
 
 if [[ "$@" == *"--expose-config"* ]]; then
-    mkdir -p /tmp/kube-config
-    cat ~/.kube/config > /tmp/kube-config/index.html
-    chmod -R 777 /tmp/kube-config
-    docker run --rm -p 8080:80 -v /tmp/kube-config:/usr/share/nginx/html nginx:alpine
+    curl -fsSL "https://github.com/zerosuxx/go-simple-http-server/releases/download/0.1.0/simple-http-server-linux-`arch`" \
+        -o /usr/local/bin/simple-http-server
+    chmod +x /usr/local/bin/simple-http-server
+    cat ~/.kube/config | simple-http-server -
 fi
