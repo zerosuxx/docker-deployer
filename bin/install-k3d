@@ -9,10 +9,17 @@ curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 if [[ "$@" == *"--wait-for-docker"* ]]; then
     echo -n "Waiting for dockerd"
     until $(curl --output /dev/null --silent --head http://localhost:2375); do printf '.'; sleep 5; done
+    echo
 fi
 
 if [[ "$@" == *"--create-cluster"* ]]; then
     k3d cluster create --no-lb --api-port 16443
+fi
+
+if [[ "$@" == *"--wait-for-k3d"* ]]; then
+    echo -n "Waiting for k3d"
+    until kubectl get pods 2>&1 | grep -L "the server is currently unable to handle the request" > /dev/null; do printf '.'; sleep 5; done
+    echo
 fi
 
 if [[ "$@" == *"--expose-config"* ]]; then
