@@ -2,6 +2,28 @@
 
 set -e
 
+while getopts ":-:" option; do
+    case "${option}" in
+        -)
+            case "${OPTARG}" in
+                k3s-arg)
+                    k3sArg="${!OPTIND}";
+                    OPTIND=$(( $OPTIND + 1 ))
+                    ;;
+                k3s-arg=*)
+                    k3sArg=${OPTARG#*=}
+                    ;;
+                k3d-arg)
+                    k3dArg="${!OPTIND}";
+                    OPTIND=$(( $OPTIND + 1 ))
+                    ;;
+                k3d-arg=*)
+                    k3dArg=${OPTARG#*=}
+                    ;;
+            esac;;
+    esac
+done
+
 sysctl fs.inotify.max_user_instances=1280
 sysctl fs.inotify.max_user_watches=655360
 curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
@@ -13,7 +35,7 @@ if [[ "$@" == *"--wait-for-docker"* ]]; then
 fi
 
 if [[ "$@" == *"--create-cluster"* ]]; then
-    k3d cluster create --no-lb --api-port 16443
+    k3d cluster create --no-lb --api-port 16443 --k3s-arg "${k3sArg}" ${k3dArg}
 fi
 
 if [[ "$@" == *"--wait-for-k3d"* ]]; then
